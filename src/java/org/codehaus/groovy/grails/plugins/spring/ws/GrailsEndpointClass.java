@@ -16,15 +16,15 @@
 package org.codehaus.groovy.grails.plugins.spring.ws;
 
 import org.codehaus.groovy.grails.commons.GrailsClass;
-import org.springframework.ws.server.endpoint.PayloadEndpoint;
 
 /**
  * Interface for Spring Web Services endpoint artefacts.
  *
  * @author Russ Miles (russ@russmiles.com)
- * 
+ * @author Ivo Houbrechts (ivo@houbrechts-it.be)
+ *
  */
 
-public interface GrailsEndpointClass extends GrailsClass, PayloadEndpoint {
+public interface GrailsEndpointClass extends GrailsClass {
 
 }

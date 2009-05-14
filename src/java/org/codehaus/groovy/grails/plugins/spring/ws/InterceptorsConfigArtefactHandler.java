@@ -16,21 +16,19 @@
 
 package org.codehaus.groovy.grails.plugins.spring.ws;
 
-import org.codehaus.groovy.grails.commons.AbstractInjectableGrailsClass;
-
-import javax.xml.transform.TransformerConfigurationException;
+import org.codehaus.groovy.grails.commons.ArtefactHandlerAdapter;
 
 /**
- * Default class for Spring Web Services endpoint artefacts.
+ * Grails artefact handler for Interceptors classes.
  *
- * @author Russ Miles (russ@russmiles.com)
  * @author Ivo Houbrechts (ivo@houbrechts-it.be)
  *
  */
+public class InterceptorsConfigArtefactHandler extends ArtefactHandlerAdapter {
 
-public class DefaultGrailsEndpointClass extends AbstractInjectableGrailsClass {
+    public static final String TYPE = "Interceptors";
 
-	public DefaultGrailsEndpointClass(Class clazz) throws TransformerConfigurationException {
-		super(clazz, "Endpoint");
-	}
+    public InterceptorsConfigArtefactHandler() {
+        super(TYPE, GrailsInterceptorsClass.class, DefaultGrailsInterceptorsClass.class, TYPE);
+    }
 }
