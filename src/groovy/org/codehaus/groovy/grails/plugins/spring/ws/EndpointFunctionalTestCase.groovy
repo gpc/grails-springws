@@ -18,6 +18,8 @@ package org.codehaus.groovy.grails.plugins.spring.ws
 
 import com.russmiles.groovy.webservices.client.WebServiceTemplate
 
+import groovy.xml.MarkupBuilder
+
 /**
  * Convenience endpoint functional test base class.
  *
@@ -32,4 +34,14 @@ public class EndpointFunctionalTestCase extends GroovyTestCase {
     void setUp(){
         webServiceTemplate = new WebServiceTemplate()
     }
+	
+	def withEndpointRequest = { url, payload ->
+		def writer = new StringWriter()
+	    def request = new MarkupBuilder(writer)
+		payload.delegate = request
+		payload.call()
+		
+		def response = webServiceTemplate.sendToEndpoint(url, writer.toString())
+	    new XmlSlurper().parseText(response)
+	}
 }

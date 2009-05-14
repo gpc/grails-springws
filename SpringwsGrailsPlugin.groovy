@@ -60,6 +60,9 @@ class SpringwsGrailsPlugin {
 		  common logic in an unintrusive fashion across a specified range of endpoints
 		* New in 0.2: You can now export the wsdl for a given endpoint by simply setting 
 		  the springws.wsdl.<your endpoint name, without the Endpoint bit>.export
+		* New in 0.2: The EndpointFunctionalTestCase has been updated to package a more
+		  groovy withEndpointRequest closure that significantly tightens up your endpoint
+		  functional test code.
         * On the service provision side, a first-class endpoint	artefact is introduced including 
           functional tests for endpoints.
         * When consuming services, a WebServiceTemplate is provided, in much the same vein as 
