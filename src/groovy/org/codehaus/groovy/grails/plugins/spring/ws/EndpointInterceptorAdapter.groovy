@@ -59,12 +59,12 @@ public class EndpointInterceptorAdapter implements EndpointInterceptor {
     public boolean handleResponse(MessageContext messageContext, Object endPointClass) {
         try {
             if (accept(endPointClass.name)) {
-                if (interceptorConfig.handleResponse) {
-                    if (!interceptorConfig.handleResponse(messageContext, endPointClass))
+                for (interceptor in interceptorConfig.interceptorList?.reverse()) {
+                    if (!interceptor.handleResponse(messageContext, endPointClass))
                         return false
                 }
-                for (interceptor in interceptorConfig.interceptorList) {
-                    if (!interceptor.handleResponse(messageContext, endPointClass))
+                if (interceptorConfig.handleResponse) {
+                    if (!interceptorConfig.handleResponse(messageContext, endPointClass))
                         return false
                 }
             }
@@ -78,12 +78,12 @@ public class EndpointInterceptorAdapter implements EndpointInterceptor {
     public boolean handleFault(MessageContext messageContext, Object endPointClass) {
         try {
             if (accept(endPointClass.name)) {
-                if (interceptorConfig.handleFault) {
-                    if (!interceptorConfig.handleFault(messageContext, endPointClass))
+                for (interceptor in interceptorConfig.interceptorList?.reverse()) {
+                    if (!interceptor.handleFault(messageContext, endPointClass))
                         return false
                 }
-                for (interceptor in interceptorConfig.interceptorList) {
-                    if (!interceptor.handleFault(messageContext, endPointClass))
+                if (interceptorConfig.handleFault) {
+                    if (!interceptorConfig.handleFault(messageContext, endPointClass))
                         return false
                 }
             }

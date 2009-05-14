@@ -7,8 +7,11 @@
     	contract-driven web services. Feature highlights include: 
 		* New in 0.2: Endpoint Interceptors have been introduced so you can now introduce
 		  common logic in an unintrusive fashion across a specified range of endpoints
-		* New in 0.2: You can now export the wsdl for a given endpoint by simply setting 
-		  the springws.wsdl.&lt;your endpoint name, without the Endpoint bit&gt;.export
+		* New in 0.2: You can now export the wsdl for a given endpoint by, in the simplest case,  
+		  setting the springws.wsdl.&lt;your endpoint name, without the Endpoint bit&gt;.export
+		* New in 0.2: The EndpointFunctionalTestCase has been updated to package a more
+		  groovy withEndpointRequest closure that significantly tightens up your endpoint
+		  functional test code. (Thanks to Graeme Rocher for the input there!)
         * On the service provision side, a first-class endpoint	artefact is introduced including 
           functional tests for endpoints.
         * When consuming services, a WebServiceTemplate is provided, in much the same vein as 
