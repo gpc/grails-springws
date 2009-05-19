@@ -20,6 +20,7 @@
   <resources>
     <resource>Config</resource>
     <resource>spring.resources</resource>
+    <resource>UrlMappings</resource>
     <resource>EndpointInterceptors</resource>
     <resource>HolidayEndpoint</resource>
   </resources>
