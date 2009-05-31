@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project name="Holiday" soapui-version="3.0-beta1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="HolidayPortSoap11" type="wsdl" bindingName="{http://mycompany.com/hr/v2/definitions}HolidayPortSoap11" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/Holiday/services/hr/v2/Holiday/Holiday-v2.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/Holiday/services/hr/v2/Holiday/Holiday-v2.wsdl"><con:part><con:url>http://localhost:8080/Holiday/services/hr/v2/Holiday/Holiday-v2.wsdl</con:url><con:content><![CDATA[<wsdl:definitions targetNamespace="http://mycompany.com/hr/v2/definitions" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://mycompany.com/hr/schemas" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://mycompany.com/hr/v2/definitions">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://mycompany.com/hr/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:hr="http://mycompany.com/hr/schemas">
+      <xs:element name="HolidayRequest">
+        <xs:complexType>
+          <xs:all>
+            <xs:element name="Holiday" type="hr:HolidayType"/>
+            <xs:element name="Employee" type="hr:EmployeeType"/>
+          </xs:all>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="HolidayType">
+        <xs:sequence>
+          <xs:element name="StartDate" type="xs:date"/>
+          <xs:element name="EndDate" type="xs:date"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="EmployeeType">
+        <xs:sequence>
+          <xs:element name="Number" type="xs:integer"/>
+          <xs:element name="FirstName" type="xs:string"/>
+          <xs:element name="LastName" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="HolidayRequest">
+    <wsdl:part element="sch:HolidayRequest" name="HolidayRequest"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="HolidayPort">
+    <wsdl:operation name="Holiday">
+      <wsdl:input message="tns:HolidayRequest" name="HolidayRequest"></wsdl:input>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HolidayPortSoap11" type="tns:HolidayPort">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="Holiday">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="HolidayRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="HolidayService">
+    <wsdl:port binding="tns:HolidayPortSoap11" name="HolidayPortSoap11">
+      <soap:address location="http://localhost:8080/Holiday/services/hr/v2/Holiday"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/Holiday/services/hr/v2/Holiday</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="Holiday" bindingOperationName="Holiday" type="One-Way" inputName="HolidayRequest" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/Holiday/services/hr/v2/Holiday</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sch="http://mycompany.com/hr/schemas">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <sch:HolidayRequest>
+         <!--You may enter the following 2 items in any order-->
+         <sch:Holiday>
+            <sch:StartDate>2008-09-29</sch:StartDate>
+            <sch:EndDate>2014-09-19</sch:EndDate>
+         </sch:Holiday>
+         <sch:Employee>
+            <sch:Number>100</sch:Number>
+            <sch:FirstName>verrantque per auras</sch:FirstName>
+            <sch:LastName>per auras</sch:LastName>
+         </sch:Employee>
+      </sch:HolidayRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://mycompany.com/hr/v2/definitions/HolidayPort/HolidayRequest"/></con:call></con:operation></con:interface><con:testSuite name="HolidayPortSoap11 TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Holiday TestCase" searchProperties="true"><con:settings/><con:testStep type="request" name="Holiday"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>HolidayPortSoap11</con:interface><con:operation>Holiday</con:operation><con:request name="Holiday"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/Holiday/services/hr/v2/Holiday</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sch="http://mycompany.com/hr/schemas">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <sch:HolidayRequest>
+         <!--You may enter the following 2 items in any order-->
+         <sch:Holiday>
+            <sch:StartDate>2008-09-29</sch:StartDate>
+            <sch:EndDate>2014-09-19</sch:EndDate>
+         </sch:Holiday>
+         <sch:Employee>
+            <sch:Number>100</sch:Number>
+            <sch:FirstName>verrantque per auras</sch:FirstName>
+            <sch:LastName>per auras</sch:LastName>
+         </sch:Employee>
+      </sch:HolidayRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:wsaConfig action="http://mycompany.com/hr/v2/definitions/HolidayPort/HolidayRequest"/></con:request></con:config></con:testStep><con:loadTest name="LoadTest 1"><con:settings/><con:threadCount>5</con:threadCount><con:startDelay>0</con:startDelay><con:sampleInterval>250</con:sampleInterval><con:calculateTPSOnTimePassed>true</con:calculateTPSOnTimePassed><con:resetStatisticsOnThreadCountChange>true</con:resetStatisticsOnThreadCountChange><con:historyLimit>-1</con:historyLimit><con:testLimit>60</con:testLimit><con:limitType>TIME</con:limitType><con:loadStrategy><con:type>Thread</con:type><con:config><startThreadCount>5</startThreadCount><endThreadCount>5</endThreadCount></con:config></con:loadStrategy><con:assertion type="Step Status" name="Step Status"/><con:maxAssertionErrors>100</con:maxAssertionErrors><con:cancelExcessiveThreads>true</con:cancelExcessiveThreads><con:strategyInterval>500</con:strategyInterval></con:loadTest><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/></con:soapui-project>

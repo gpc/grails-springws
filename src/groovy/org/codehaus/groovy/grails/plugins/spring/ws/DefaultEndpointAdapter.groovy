@@ -20,24 +20,27 @@ import groovy.xml.MarkupBuilder
 import javax.xml.transform.Source
 import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
-import org.codehaus.groovy.grails.plugins.spring.ws.AbstractEnpointAdapter
+import org.codehaus.groovy.grails.plugins.spring.ws.AbstractEndpointAdapter
 import org.springframework.xml.transform.StringResult
 
 /**
- * Default endpoint adapter that transforms the request into an   {@link XmlSlurper}   and the response into a   {@link MarkupBuilder}
+ * Default endpoint adapter that transforms the request into an 
+ * {@link XmlSlurper} and the response into a {@link MarkupBuilder}
  *
  * @author Russ Miles (russ@russmiles.com)
  * @author Ivo Houbrechts (ivo@houbrechts-it.be)
+ * @author Okke Tijhuis (o.tijhuis@gmail.com)
  *
  */
-public class DefaultEndpointAdapter extends AbstractEnpointAdapter {
-    private final Transformer transformer
+public class DefaultEndpointAdapter extends AbstractEndpointAdapter {
+    private final TransformerFactory transformerFactory
 
     public DefaultEndpointAdapter() {
-        this.transformer = TransformerFactory.newInstance().newTransformer();
+        this.transformerFactory = TransformerFactory.newInstance();
     }
 
     protected Object createRequest(Source request) throws Exception {
+		def transformer = transformerFactory.newTransformer()
         StringResult result = new StringResult()
         transformer.transform(request, result)
         return new XmlSlurper().parseText(result.toString())

@@ -1,17 +1,18 @@
-<plugin name='springws' version='0.2' grailsVersion='1.1 &gt; *'>
+<plugin name='springws' version='0.2.1' grailsVersion='1.1 &gt; *'>
   <author>Russ Miles</author>
   <authorEmail>russ@russmiles.com</authorEmail>
   <title>This plugin adds contract driven web service capabilities to a Grails application.</title>
   <description>\
     	Spring Web Services plugin allows your Grails application to provide and consume 
     	contract-driven web services. Feature highlights include: 
-		* New in 0.2: Endpoint Interceptors have been introduced so you can now introduce
+		* New in 0.2.1: Fixed concurrency bug in DefaultEndpointAdapter (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
+		* New in 0.2.1: Upgraded to Spring Web Services 1.5.7 (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
+		* Endpoint Interceptors so that you can now introduce
 		  common logic in an unintrusive fashion across a specified range of endpoints
-		* New in 0.2: You can now export the wsdl for a given endpoint by, in the simplest case,  
+		* You can export the wsdl for a given endpoint by, in the simplest case,  
 		  setting the springws.wsdl.&lt;your endpoint name, without the Endpoint bit&gt;.export
-		* New in 0.2: The EndpointFunctionalTestCase has been updated to package a more
-		  groovy withEndpointRequest closure that significantly tightens up your endpoint
-		  functional test code. (Thanks to Graeme Rocher for the input there!)
+		* The EndpointFunctionalTestCase offers a more groovy withEndpointRequest closure 
+		  that significantly tightens up your endpoint functional test code.
         * On the service provision side, a first-class endpoint	artefact is introduced including 
           functional tests for endpoints.
         * When consuming services, a WebServiceTemplate is provided, in much the same vein as 

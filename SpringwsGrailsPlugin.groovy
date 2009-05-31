@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory
  */
 class SpringwsGrailsPlugin {
     // the plugin version
-    def version = "0.2"
+    def version = "0.2.1"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.1 > *"
     // the other plugins this plugin depends on
@@ -47,7 +47,8 @@ class SpringwsGrailsPlugin {
 			'grails-app/endpoints/*',
 			'test/functional/*',
 			'test/unit/*',
-			'test/integration/*'
+			'test/integration/*',
+			'soapui/*'
     ]
 
     def author = "Russ Miles"
@@ -56,13 +57,14 @@ class SpringwsGrailsPlugin {
     def description = '''\\
     	Spring Web Services plugin allows your Grails application to provide and consume 
     	contract-driven web services. Feature highlights include: 
-		* New in 0.2: Endpoint Interceptors have been introduced so you can now introduce
+		* New in 0.2.1: Fixed concurrency bug in DefaultEndpointAdapter (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
+		* New in 0.2.1: Upgraded to Spring Web Services 1.5.7 (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
+		* Endpoint Interceptors so that you can now introduce
 		  common logic in an unintrusive fashion across a specified range of endpoints
-		* New in 0.2: You can now export the wsdl for a given endpoint by, in the simplest case,  
+		* You can export the wsdl for a given endpoint by, in the simplest case,  
 		  setting the springws.wsdl.<your endpoint name, without the Endpoint bit>.export
-		* New in 0.2: The EndpointFunctionalTestCase has been updated to package a more
-		  groovy withEndpointRequest closure that significantly tightens up your endpoint
-		  functional test code. (Thanks to Graeme Rocher for the input there!)
+		* The EndpointFunctionalTestCase offers a more groovy withEndpointRequest closure 
+		  that significantly tightens up your endpoint functional test code.
         * On the service provision side, a first-class endpoint	artefact is introduced including 
           functional tests for endpoints.
         * When consuming services, a WebServiceTemplate is provided, in much the same vein as 

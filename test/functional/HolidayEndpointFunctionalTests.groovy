@@ -23,6 +23,7 @@ import org.springframework.ws.soap.client.SoapFaultClientException
   * with the full web service stack in place.
   *
   * @author Russ Miles (russ@russmiles.com)
+  * @author Okke Tijhuis (o.tijhuis@gmail.com)
   *
   */
 class HolidayEndpointFunctionalTests extends EndpointFunctionalTestCase {
@@ -48,10 +49,48 @@ class HolidayEndpointFunctionalTests extends EndpointFunctionalTestCase {
 				
 		def status = response.status
 		assert status == "complete"
-	}
+	}	
+	
+	def static results = []
+
+    /*
+	 * Added test to cause a concurrency bug in DefaultEndpointAdapter discovered in version 0.2. 
+	 * This causes a fatal thread based error on the server without the fix.
+	 */
+    void testMultipleConcurrentSOAPDocumentServiceInvocations() {
+        def threads = []
+        (1..10).each {
+            threads.add(Thread.start {
+                def response = withEndpointRequest(serviceURL) {
+                    HolidayRequest(xmlns: namespace) {
+                        Holiday {
+                            StartDate("2006-07-03")
+                            EndDate("2006-07-07")
+                        }
+                        Employee {
+                            Number("42")
+                            FirstName("Russ")
+                            LastName("Miles")
+                        }
+                    }
+                }
+                addResult(response.status)
+            })
+        }
+        // Following is needed since jUnit doesn't wait for the threads to finish 
+		// so you can't see any output from the threads otherwise
+        threads.each {
+            it.join()
+        }
+		println results
+        assert results == ["complete","complete","complete","complete","complete","complete","complete","complete","complete","complete"]
+    }
+
+	synchronized addResult(result) {
+        results.add(result)
+    }
 	
 	void testSOAPDocumentServiceValidationInterceptor() {
-
 	  try {
      	 def response = withEndpointRequest(serviceURL) {
 		 		HolidayRequest(xmlns: namespace) {

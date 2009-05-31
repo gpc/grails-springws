@@ -28,7 +28,7 @@ import org.springframework.xml.transform.StringSource
  * @author Ivo Houbrechts (ivo@houbrechts-it.be)
  *
  */
-public abstract class AbstractEnpointAdapter implements PayloadEndpoint {
+public abstract class AbstractEndpointAdapter implements PayloadEndpoint {
     def endpointImpl
     def name
 
