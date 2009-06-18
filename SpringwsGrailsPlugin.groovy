@@ -155,7 +155,13 @@ class SpringwsGrailsPlugin {
         for(endpointClass in application.getArtefacts(EndpointArtefactHandler.TYPE)) {
             def endpoint = applicationContext.getBean("${endpointClass.fullName}")
             def adapter= new DefaultEndpointAdapter(endpointImpl: endpoint, name: endpointClass.logicalPropertyName)
-            defaultMappings["{${endpointClass.getClazz().namespace}}${endpointClass.name}Request"] = adapter
+            def requestElement
+            if(GrailsClassUtils.isStaticProperty(endpointClass.getClazz(), 'requestElement')){
+                requestElement= endpointClass.getClazz().requestElement
+            }else{
+                requestElement= "${endpointClass.name}Request"
+            }
+            defaultMappings["{${endpointClass.getClazz().namespace}}${requestElement}"] = adapter
         }
 
         if (log.debugEnabled) log.debug("resulting mappings: ${defaultMappings}")
