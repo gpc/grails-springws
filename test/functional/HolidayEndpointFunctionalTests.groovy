@@ -90,6 +90,10 @@ class HolidayEndpointFunctionalTests extends EndpointFunctionalTestCase {
         results.add(result)
     }
 	
+	/*
+	 * Test the incoming payload document validation interceptor
+	 *
+	 */
 	void testSOAPDocumentServiceValidationInterceptor() {
 	  try {
      	 def response = withEndpointRequest(serviceURL) {
@@ -114,4 +118,28 @@ class HolidayEndpointFunctionalTests extends EndpointFunctionalTestCase {
 	  }
 	  assert false
     }
+
+	/*
+	 * Test the custom request payload element configuration option
+	 *
+	 */
+	void testSOAPDocumentServiceCustomPayloadElement() {
+		
+		def response = withEndpointRequest(serviceURL) {
+		 		Vacation(xmlns: namespace) {
+				     Holiday {
+				       StartDate("2006-07-03")
+				       EndDate("2006-07-07")
+				     }
+				     Employee {
+				       Number("42")
+				       FirstName("Russ")
+				       LastName("Miles")
+				     }
+				   }
+				}
+				
+		def status = response.status
+		assert status == "complete"
+	}
 }

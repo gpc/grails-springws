@@ -57,6 +57,7 @@ class SpringwsGrailsPlugin {
     def description = '''\\
     	Spring Web Services plugin allows your Grails application to provide and consume 
     	contract-driven web services. Feature highlights include: 
+		* New in 0.2.2: Added configuration option to override default Endpoint-name-based strategy for mapping incoming XML payloads to endpoints
 		* New in 0.2.1: Fixed concurrency bug in DefaultEndpointAdapter (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
 		* New in 0.2.1: Upgraded to Spring Web Services 1.5.7 (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
 		* Endpoint Interceptors so that you can now introduce
