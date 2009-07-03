@@ -37,11 +37,14 @@ import org.apache.commons.logging.LogFactory
  */
 class SpringwsGrailsPlugin {
     // the plugin version
-    def version = "0.2.2"
+    def version = "0.2.3"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.1 > *"
     // the other plugins this plugin depends on
-    def dependsOn = [functionalTest:'1.2.5 > *']
+	// This dependency would be useful, but should be scoped to
+	// test only to avoid packaging problems... however there is currently
+	// no scoping for inter-plugin dependencies
+    //def dependsOn = [functionalTest:'1.2.5 > *']
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
 			'grails-app/endpoints/*',
