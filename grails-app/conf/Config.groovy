@@ -15,6 +15,23 @@ springws.wsdl.Holiday.export
 //    }
 //}
 
+// Test example configuration for WS Security support
+springws.security.keyStore.myKeyStore.location='file:grails-app/keys/mykeystore.jks'
+springws.security.keyStore.myKeyStore.type='jks'
+springws.security.keyStore.myKeyStore.password='123456'
+
+// An example of what each the Spring WS security factors are
+//springws.security.keyStore.myOtherKeyStore.location='file://'
+//springws.security.keyStore.myOtherKeyStore.type=''
+//springws.security.keyStore.myOtherKeyStore.password=''
+
+// You can even declare all the security configuration in one statement if you prefer
+//springws.security.keyStore.myOtherKeyStore{
+//    location='file://'
+//    type=''
+//    password=''
+//}
+
 // log4j configuration
 log4j = {
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
@@ -33,3 +50,4 @@ log4j = {
 
 grails.views.default.codec="none" // none, html, base64
 grails.views.gsp.encoding="UTF-8"
+

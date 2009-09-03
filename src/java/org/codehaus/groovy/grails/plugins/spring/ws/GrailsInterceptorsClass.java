@@ -21,7 +21,7 @@ import org.codehaus.groovy.grails.commons.GrailsClass;
 import java.util.List;
 
 /**
- *  * Interface for Spring Web Services endpoint interceptor artefacts.
+ *  Interface for Spring Web Services endpoint interceptor artefacts.
  *
  * @author Russ Miles (russ@russmiles.com)
  * @author Ivo Houbrechts (ivo@houbrechts-it.be)

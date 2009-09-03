@@ -21,6 +21,8 @@ import org.codehaus.groovy.grails.plugins.spring.ws.EndpointInterceptorAdapter
 import org.codehaus.groovy.grails.plugins.spring.ws.DefaultEndpointAdapter
 import org.codehaus.groovy.grails.plugins.spring.ws.ReloadablePayloadRootQNameEndpointMapping
 
+import org.codehaus.groovy.grails.plugins.PluginManagerHolder
+
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.codehaus.groovy.grails.commons.GrailsApplication
@@ -28,23 +30,36 @@ import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition
 import org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection
 import org.apache.commons.logging.LogFactory
 
+import org.codehaus.groovy.grails.plugins.spring.ws.InterceptorConfig
+import org.codehaus.groovy.grails.plugins.spring.ws.security.*
+
+import grails.util.GrailsNameUtils
+
+
 /**
  * Plugin that introduces some conventions for creating Spring WS based, best practice
  * web services.
  *
  * @author Russ Miles (russ@russmiles.com)
  * @author Ivo Houbrechts (ivo@houbrechts-it.be)
+ * @author Tareq Abed Rabo (tareq.abedrabbo@gmail.com)
  */
 class SpringwsGrailsPlugin {
+
     // the plugin version
-    def version = "0.2.3"
+    def version = "0.5.0"
+
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.1 > *"
+
     // the other plugins this plugin depends on
 	// This dependency would be useful, but should be scoped to
 	// test only to avoid packaging problems... however there is currently
 	// no scoping for inter-plugin dependencies
     //def dependsOn = [functionalTest:'1.2.5 > *']
+	// TODO Is Spring Security actually a dependency? Probably not...
+    //def dependsOn = [acegi:'0.5.2 > *']
+
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
 			'grails-app/endpoints/*',
@@ -55,11 +70,15 @@ class SpringwsGrailsPlugin {
     ]
 
     def author = "Russ Miles"
+
     def authorEmail = "russ@russmiles.com"
+
    	def title = "This plugin adds contract driven web service capabilities to a Grails application."
+
     def description = '''\\
     	Spring Web Services plugin allows your Grails application to provide and consume 
     	contract-driven web services. Feature highlights include: 
+    	* New in 0.5.0: Added support for Web Services Security (WS-Security)
 		* New in 0.2.3: Bug fix release (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1225)
 		* New in 0.2.2: Added configuration option to override default Endpoint-name-based strategy for mapping incoming XML payloads to endpoints
 		* New in 0.2.1: Fixed concurrency bug in DefaultEndpointAdapter (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
@@ -77,7 +96,7 @@ class SpringwsGrailsPlugin {
 
     def documentation = "http://grails.org/SpringWs+Plugin"
 
-    def artefacts = [EndpointArtefactHandler, InterceptorsConfigArtefactHandler]
+    def artefacts = [EndpointArtefactHandler, InterceptorsConfigArtefactHandler, WsSecurityConfigArtefactHandler]
 
 	def watchedResources = "file:./grails-app/endpoints/**/*"
 	
@@ -85,6 +104,13 @@ class SpringwsGrailsPlugin {
 	
 	static final ENDPOINT_BEANS = { endpoint ->
 	    "${endpoint.fullName}"(endpoint.clazz) { bean ->
+            bean.singleton = true
+            bean.autowire = "byName"
+        }
+    }
+
+	static final SECURITY_CONFIG_BEANS = { config ->
+        "$config.fullName"(config.clazz) { bean ->
             bean.singleton = true
             bean.autowire = "byName"
         }
@@ -124,6 +150,23 @@ class SpringwsGrailsPlugin {
                 }
             }
         }
+
+	// Add ws-security for each of the applicable classes
+        for(wsSecurityConfigClass in application.wsSecurityConfigClasses){
+            log.debug "found WS-Security configuration class: ${wsSecurityConfigClass.fullName}"
+            def callable = SECURITY_CONFIG_BEANS.curry(wsSecurityConfigClass)
+            callable.delegate = delegate
+            callable.call()
+        }
+
+        // Configure the applicable key stores
+        def keyStores = application.config.springws?.security?.keyStore
+        log.debug "key stores: ${keyStores.entrySet().inspect()}"
+        for(keyStore in keyStores) {
+            def bean = WsSecurityConfigFactory.createKeyStoreBean(keyStore)
+            bean.delegate = delegate
+            bean.call()
+        }
 		
 		// Add each of the interceptors
 		for(interceptorsClass in application.getArtefacts(InterceptorsConfigArtefactHandler.TYPE)) {
@@ -136,11 +179,11 @@ class SpringwsGrailsPlugin {
         "payloadRootQNameEndpointMapping"(ReloadablePayloadRootQNameEndpointMapping)
     }
 
-	def doWithApplicationContext = { applicationContext ->
+    def doWithApplicationContext = { applicationContext ->
         reload(application, applicationContext)
     }
 
-	def onChange = { event ->
+    def onChange = { event ->
 	    if (log.debugEnabled) log.debug("onChange: ${event}")
 	
         if(event.source.toString().endsWith('Endpoint')) {
@@ -152,7 +195,7 @@ class SpringwsGrailsPlugin {
         }
 
         reload(event.application, event.ctx)
-	}
+    }
 	
     private reload(GrailsApplication application, applicationContext) {
         log.info("reloadEndpoints")
@@ -181,6 +224,100 @@ class SpringwsGrailsPlugin {
                 interceptors << new EndpointInterceptorAdapter(interceptorConfig:interceptorConfig, configClass:bean)
             }
         }
+
+        // Spring Security integration
+	// def pluginManager = applicationContext.pluginManager
+        def pluginManager = PluginManagerHolder.pluginManager
+
+        //TODO check the acegi plugin "active" setting = true
+        def foundAcegi = pluginManager.hasGrailsPlugin('acegi')
+        def foundSecurityBeans = foundAcegi && applicationContext.authenticationManager && applicationContext.userDetailsService && applicationContext.userCache
+        def authenticationManager, userDetailsService, userCache, accessDecisionManager, objectDefinitionSource
+        if(foundAcegi) {
+            log.debug 'Found Spring Security (acegi plugin)'
+            if(foundSecurityBeans){
+                authenticationManager = applicationContext.authenticationManager
+                userDetailsService = applicationContext.userDetailsService
+                accessDecisionManager = applicationContext.wsSecurityAccessDecisionManager
+                userCache = applicationContext.userCache
+                objectDefinitionSource = applicationContext.wsSecurityObjectDefinitionSource
+                log.debug "Using authenticationManager: $authenticationManager"
+                log.debug "Using userDetailsService: $userDetailsService"
+                log.debug "Using userCache: $userCache"
+                log.debug "Using accessDecisionManager: $accessDecisionManager"
+                log.debug "Using objectDefinitionSource: $objectDefinitionSource"
+
+
+                //TODO **** for test purposes
+                def configAttributeDefinitionClass = SpringwsGrailsPlugin.classLoader.loadClass('org.springframework.security.ConfigAttributeDefinition')
+                def configAttribute = configAttributeDefinitionClass.newInstance('ROLE_WSUSER')
+                objectDefinitionSource.addSecureUrl('/services/**',configAttribute)
+
+                // replace password encoder
+                //TODO make this configurable by an option
+                log.warn 'Replacing digest by plain text password encoder. All passwords will be stored in clear text in the database.'
+                def plaintextPasswordEncoderClass = SpringwsGrailsPlugin.classLoader.loadClass('org.springframework.security.providers.encoding.PlaintextPasswordEncoder')
+                def encoder = plaintextPasswordEncoderClass.newInstance()
+                applicationContext.daoAuthenticationProvider?.passwordEncoder = encoder
+                applicationContext.authenticateService?.passwordEncoder = encoder
+
+                // exclude /services/** from the FilterChainProxy by providing a more specific url
+                def filterChain = applicationContext.springSecurityFilterChain
+                def serviceFilters = []
+                def newChainMap = ['/services/**':serviceFilters] as LinkedHashMap
+
+                newChainMap.putAll(filterChain.filterChainMap)
+                filterChain.filterChainMap = newChainMap
+                log.debug "Excluded /services/** from the security filter chain. Resulting mapping: ${filterChain.filterChainMap}"
+            }else{
+                //TODO better message: suggest running the create-auth-domains script
+                log.warn 'Security beans not found. Make sure the acegi plugin is active and the authentication domain is generated.'
+            }
+        }
+        else{
+            log.debug 'Spring Security plugin not found.'
+        }
+
+        log.debug("Reloading security config")
+        for(wsSecurityConfigClass in application.wsSecurityConfigClasses){
+            def config = applicationContext.getBean("${wsSecurityConfigClass.fullName}")
+            log.debug "Creating WS-Security interceptor for ${config.class.name}"
+            def params = [securityConfigClass:config]
+            // integration with the Spring Security Plugin
+            if(foundSecurityBeans){
+                params['authenticationManager'] = authenticationManager
+                params['userDetailsService'] = userDetailsService
+                params['userCache'] = userCache
+                params['accessDecisionManager'] = accessDecisionManager
+                params['objectDefinitionSource'] = objectDefinitionSource
+            }
+            def securityInterceptor = WsSecurityConfigFactory.createInterceptor(params)
+            log.debug "Created WS-Security interceptor: ${securityInterceptor.dump()}"
+            // detect referent endpoints
+            def referents = []
+            for(endpointClass in application.endpointClasses) {
+                //TODO support default config class i.e. static wsSecurity = true
+                if(GrailsClassUtils.isStaticProperty(endpointClass.clazz, 'wsSecurity')){
+                    def configClass = endpointClass.clazz.wsSecurity
+                    if(configClass == config.class){
+                        referents << GrailsNameUtils.getPropertyName(endpointClass.name)
+                    }
+                }
+            }
+            log.debug "Endpoints using ${config.class.name}: ${referents.inspect()}"
+            def regexp = referents.join('|')
+            if(referents){
+                def interceptorConfig = new InterceptorConfig(name:wsSecurityConfigClass.fullName, interceptorList:[securityInterceptor],scope:regexp ,initialised:true)
+                def interceptorAdapter = new EndpointInterceptorAdapter(interceptorConfig:interceptorConfig)
+                // inject it in the interceptors chain
+                def order = GrailsClassUtils.isStaticProperty(config.class,'order') ? config.order : 0
+                if(order > interceptors.size()){
+                    order = interceptors.size() // -1?
+                }
+                interceptors.add(order, interceptorAdapter)
+            }
+        }
+
         if (log.debugEnabled) log.debug("resulting interceptors: ${interceptors}")
         applicationContext.getBean('payloadRootQNameEndpointMapping').interceptors = interceptors
     }
