@@ -20,10 +20,13 @@ import com.russmiles.groovy.webservices.client.WebServiceTemplate
 
 import groovy.xml.MarkupBuilder
 
+import org.codehaus.groovy.grails.plugins.spring.ws.security.WsSecurityConfigFactory
+
 /**
  * Convenience endpoint functional test base class.
  *
  * @author Russ Miles (russ@russmiles.com)
+ * @author Tareq Abedrabbo (tareq.abedrabbo@gmail.com)
  *
  */
 public class EndpointFunctionalTestCase extends GroovyTestCase {
@@ -42,6 +45,26 @@ public class EndpointFunctionalTestCase extends GroovyTestCase {
 		payload.call()
 		
 		def response = webServiceTemplate.sendToEndpoint(url, writer.toString())
+	    new XmlSlurper().parseText(response)
+	}
+	
+	// accepts a security config instance and applies the resulting security interceptor
+    def withSecuredEndpointRequest = { url, wsSecurityConfig, payload ->
+		def writer = new StringWriter()
+	    def request = new MarkupBuilder(writer)
+		payload.delegate = request
+		payload.call()
+
+        // set the security Interceptor
+        def securityInterceptor = WsSecurityConfigFactory.createInterceptor(securityConfigClass: wsSecurityConfig)
+        def swsTemplate =  webServiceTemplate.webServiceTemplate
+        swsTemplate.interceptors = [securityInterceptor]
+
+		def response = webServiceTemplate.sendToEndpoint(url, writer.toString())
+
+        // clean up
+        swsTemplate.interceptors = [securityInterceptor]
+
 	    new XmlSlurper().parseText(response)
 	}
 }

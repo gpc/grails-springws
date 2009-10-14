@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package org.codehaus.groovy.grails.plugins.spring.ws.security;
+import org.codehaus.groovy.grails.plugins.spring.ws.codec.AbstractXMLDateCodec
 
-import org.codehaus.groovy.grails.commons.ArtefactHandlerAdapter;
-import static org.codehaus.groovy.grails.plugins.spring.ws.security.DefaultGrailsWsSecurityConfigClass.WS_SECURITY_CONFIG;
 
 /**
+ * Encoder for XML date type.
  *
  * @author Tareq Abedrabbo (tareq.abedrabbo@gmail.com)
  */
-public class WsSecurityConfigArtefactHandler extends ArtefactHandlerAdapter {
+class XMLDateCodec extends AbstractXMLDateCodec {
 
-	public static String TYPE = "WsSecurityConfig";
-
-    public WsSecurityConfigArtefactHandler(){
-        super(TYPE, GrailsWsSecurityConfigClass.class, DefaultGrailsWsSecurityConfigClass.class, WS_SECURITY_CONFIG);
+    static encode = {target ->
+        def calendar = toCalendar(target)
+        def xmlCalendar = datatypeFactory.newXMLGregorianCalendar()
+        xmlCalendar.year = calendar.get(Calendar.YEAR)
+        xmlCalendar.month = calendar.get(Calendar.MONTH)
+        xmlCalendar.day = calendar.get(Calendar.DAY_OF_MONTH)
+        xmlCalendar.toXMLFormat()
     }
-
 }

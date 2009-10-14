@@ -26,10 +26,12 @@
     <resource>spring.resources</resource>
     <resource>UrlMappings</resource>
     <resource>WsSecurityConfig</resource>
+    <resource>CancelHolidayEndpoint</resource>
     <resource>CustomRequestElementEndpoint</resource>
     <resource>EndpointInterceptors</resource>
     <resource>HolidayEndpoint</resource>
-    <resource>SecureHolidayEndpoint</resource>
+    <resource>XMLDateCodec</resource>
+    <resource>XMLDateTimeCodec</resource>
   </resources>
   <dependencies />
 </plugin>

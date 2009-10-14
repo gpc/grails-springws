@@ -20,22 +20,35 @@ import java.util.regex.Pattern
 import org.apache.commons.logging.LogFactory
 import org.springframework.ws.context.MessageContext
 import org.springframework.ws.server.EndpointInterceptor
+import org.springframework.ws.soap.server.SoapEndpointInterceptor
+import org.springframework.ws.soap.SoapHeaderElement
 
 /**
  * Implementation of  {@link EndpointInterceptor}  that delegates to an Interceptors artefact
  *
  * @author Ivo Houbrechts (ivo@houbrechts-it.be)
+ * @author Tareq Abedrabbo (tareq.abedrabbo@gmail.com)
  *
  */
-public class EndpointInterceptorAdapter implements EndpointInterceptor {
-    def interceptorConfig;
-    def configClass;
+public class EndpointInterceptorAdapter implements SoapEndpointInterceptor {
+	
+    def interceptorConfig
+    def configClass
 
-    def endpoineRegex;
+    def endpoineRegex
     def interceptorList
 
     private static def log = LogFactory.getLog(EndpointInterceptorAdapter)
 
+	public boolean understands(SoapHeaderElement element) {
+	   // ask each soap interceptor if it understands the header element
+       for (interceptor in interceptorConfig.interceptorList) {
+           if (interceptor instanceof SoapEndpointInterceptor && interceptor.understands(element)) {
+               return true
+           }
+       }
+       return false
+    }
 
     public boolean handleRequest(MessageContext messageContext, Object endPointClass) {
         try {

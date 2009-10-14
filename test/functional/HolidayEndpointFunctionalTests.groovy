@@ -142,28 +142,4 @@ class HolidayEndpointFunctionalTests extends EndpointFunctionalTestCase {
 		def status = response.status
 		assert status == "complete"
 	}
-
-	/*
-	 * Test the WS-Security secured endpoint
-	 *
-	 */
-	void testWSSecuritySecuredEndpoint() {
-		
-		def response = withEndpointRequest(serviceURL) {
-		 		SecureVacation(xmlns: namespace) {
-				     Holiday {
-				       StartDate("2006-07-03")
-				       EndDate("2006-07-07")
-				     }
-				     Employee {
-				       Number("42")
-				       FirstName("Russ")
-				       LastName("Miles")
-				     }
-				   }
-				}
-				
-		def status = response.status
-		assert status == "complete"
-	}
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.codehaus.groovy.grails.plugins.spring.ws.security
 
 import java.io.IOException
@@ -24,10 +40,12 @@ import org.springframework.ws.soap.security.wss4j.callback.UsernameTokenPrincipa
 import org.codehaus.groovy.grails.web.util.WebUtils
 
 /**
+ * A Wss4J callback handler that intergates with Spring Security.
+ * Supports authetication and authroization.
  *
- * @author tareq.abedrabbo
+ * @author Tareq Abedrabbo (tareq.abedrabbo@gmail.com)
  */
-class Wss4jSpringSecurityPasswordCallbackHandler extends AbstractWsPasswordCallbackHandler{
+class Wss4jSpringSecurityPasswordCallbackHandler extends AbstractWsPasswordCallbackHandler {
 
     def log = LogFactory.getLog(Wss4jSpringSecurityPasswordCallbackHandler)
 
@@ -56,7 +74,7 @@ class Wss4jSpringSecurityPasswordCallbackHandler extends AbstractWsPasswordCallb
             def request = WebUtils.retrieveGrailsWebRequest()
             def attributes = objectDefinitionSource.getAttributes(request)
             log.debug "attributes for $request= ${attributes?.dump()}"
-            if(attributes){
+            if(attributes) {
                 accessDecisionManager.decide(authResult, request, objectDefinitionSource.getAttributes(request))
                 log.debug "Authorization success for $authResult"
             }
@@ -78,12 +96,14 @@ class Wss4jSpringSecurityPasswordCallbackHandler extends AbstractWsPasswordCallb
 
     protected void handleUsernameTokenPrincipal(UsernameTokenPrincipalCallback callback)
         throws IOException, UnsupportedCallbackException {
+	
         UserDetails user = loadUserDetails(callback.principal.name)
         WSUsernameTokenPrincipal principal = callback.principal
         UsernamePasswordAuthenticationToken authRequest =
         new UsernamePasswordAuthenticationToken(principal, principal.password, user.authorities)
         log.debug "Authentication success: $authRequest"
         SecurityContextHolder.context.authentication = authRequest
+
     }
 
     private UserDetails loadUserDetails(String username) throws DataAccessException {

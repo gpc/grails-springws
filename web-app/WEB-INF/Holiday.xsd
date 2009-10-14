@@ -27,6 +27,14 @@
             </xs:all>
         </xs:complexType>
     </xs:element>
+    <xs:element name="CancelHolidayRequest">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="Holiday" type="hr:HolidayType"/>
+                <xs:element name="Employee" type="hr:EmployeeType"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
     <xs:complexType name="HolidayType">
         <xs:sequence>
             <xs:element name="StartDate" type="xs:date"/>

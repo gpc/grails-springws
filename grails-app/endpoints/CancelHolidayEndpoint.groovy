@@ -15,22 +15,21 @@
  */
  
 /**
- * A simple sample secure endpoint for testing purposes
+ * A simple sample endpoint for testing purposes
  *
  * @author Russ Miles (russ@russmiles.com)
+ * @author Tareq Abedrabbo (tareq.abedrabbo@gmail.com)
  */
-class SecureHolidayEndpoint {
+class CancelHolidayEndpoint {
 	
 	def static namespace = "http://mycompany.com/hr/schemas"
 
-	def static wsSecurity = WsSecurityConfig
-		
-	def static requestElement= "SecureVacation"
+    def static wsSecurity = true
 
 	def invoke = { request, response ->
 
 	  // Using the incoming document
-	  println "Secure Vacation Request Received!"
+	  println "Holiday Request Received!"
       println "Start Date: ${request.Holiday.StartDate}"
       println "End Date: ${request.Holiday.EndDate}"
 
@@ -38,9 +37,8 @@ class SecureHolidayEndpoint {
 
       // Preparing the response document
 	  response.HolidayResponse(xmlns: namespace) {
-         status('complete') {
+         status('canceled') {
          }
       }
-      
     }
 }

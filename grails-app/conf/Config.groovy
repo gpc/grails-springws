@@ -15,6 +15,11 @@ springws.wsdl.Holiday.export
 //    }
 //}
 
+//force Spring Security to store passwords in clear text, which is not the default
+// but necessary in digest username token schema (except if the server agrees with all
+// of its client on a hashing scheme i.e. Base64 of SHA-1 of the digest password)
+springws.security.springsecurity.clearTextPasswords=true
+
 // Test example configuration for WS Security support
 springws.security.keyStore.myKeyStore.location='file:grails-app/keys/mykeystore.jks'
 springws.security.keyStore.myKeyStore.type='jks'
@@ -46,6 +51,7 @@ log4j = {
 	       'org.hibernate'
 
     debug 'SpringwsGrailsPlugin'
+	trace 'org.springframework.ws.client.MessageTracing'
 }
 
 grails.views.default.codec="none" // none, html, base64
