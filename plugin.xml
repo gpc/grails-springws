@@ -23,9 +23,9 @@
   <documentation>http://grails.org/SpringWs+Plugin</documentation>
   <resources>
     <resource>Config</resource>
-    <resource>spring.resources</resource>
     <resource>UrlMappings</resource>
     <resource>WsSecurityConfig</resource>
+    <resource>spring.resources</resource>
     <resource>CancelHolidayEndpoint</resource>
     <resource>CustomRequestElementEndpoint</resource>
     <resource>EndpointInterceptors</resource>
@@ -33,5 +33,8 @@
     <resource>XMLDateCodec</resource>
     <resource>XMLDateTimeCodec</resource>
   </resources>
-  <dependencies />
+  <dependencies>
+    <resolvers />
+  </dependencies>
+  <behavior />
 </plugin>
