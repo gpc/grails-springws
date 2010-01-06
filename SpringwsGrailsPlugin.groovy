@@ -21,6 +21,7 @@ import org.codehaus.groovy.grails.plugins.spring.ws.EndpointInterceptorAdapter
 import org.codehaus.groovy.grails.plugins.spring.ws.DefaultEndpointAdapter
 import org.codehaus.groovy.grails.plugins.spring.ws.ReloadablePayloadRootQNameEndpointMapping
 
+
 import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean
@@ -338,7 +339,7 @@ class SpringwsGrailsPlugin {
                 params['accessDecisionManager'] = accessDecisionManager
                 params['objectDefinitionSource'] = objectDefinitionSource
             }
-			log.debug "Got here"
+          
             def securityInterceptor = WsSecurityConfigFactory.createInterceptor(params)
             log.debug "Created WS-Security interceptor: ${securityInterceptor.dump()}"
             // detect referent endpoints

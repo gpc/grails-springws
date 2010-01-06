@@ -25,7 +25,6 @@ import org.codehaus.groovy.grails.commons.GrailsClass;
  * @author Russ Miles (russ@russmiles.com)
  */
 
-// TODO Make these Groovy if possible!
 public class EndpointArtefactHandler extends ArtefactHandlerAdapter {
 
 	public static final String TYPE = "Endpoint";
