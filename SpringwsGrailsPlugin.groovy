@@ -393,8 +393,8 @@ class SpringwsGrailsPlugin {
 	    def servlets = xml.servlet
 	    servlets[servlets.size() - 1] + {
 	        servlet {
-	            'servlet-name'("web-services")
 	            'display-name'("web-services")
+	            'servlet-name'("web-services")
 	            'servlet-class'("org.springframework.ws.transport.http.MessageDispatcherServlet")
 	        }
 	    }
