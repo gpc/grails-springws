@@ -91,6 +91,9 @@ Spring Web Services plugin allows your Grails application to provide and consume
 * When consuming services, a WebServiceTemplate is provided, in much the same vein as the Spring WebServiceTemplate, that integrates more naturally with the rest of your Groovy code.'''
 
     def documentation = "http://grails.org/SpringWs+Plugin"
+    def license = "APACHE"
+    def issueManagement = [system: "JIRA", url: "http://jira.grails.org/browse/GPSPRINGWS"]
+    def scm = [url: "https://github.com/gpc/grails-springws"]
 
     def artefacts = [EndpointArtefactHandler, InterceptorsConfigArtefactHandler, WsSecurityConfigArtefactHandler]
 
