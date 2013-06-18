@@ -19,7 +19,7 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
     }
     plugins {
-        build ":release:1.0.1", {
+        build ":release:2.2.1", {
             exported = false
         }
     }

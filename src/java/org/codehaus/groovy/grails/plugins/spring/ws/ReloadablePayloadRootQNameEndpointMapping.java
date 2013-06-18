@@ -40,6 +40,7 @@ import java.util.Properties;
  * @author Ivo Houbrechts (ivo@houbrechts-it.be)
  *
  */
+@SuppressWarnings("unchecked")
 public class ReloadablePayloadRootQNameEndpointMapping extends AbstractEndpointMapping {
 
     private static TransformerFactory transformerFactory;

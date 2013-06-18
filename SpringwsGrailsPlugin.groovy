@@ -50,7 +50,7 @@ import org.springframework.ws.soap.server.endpoint.SimpleSoapExceptionResolver
 class SpringwsGrailsPlugin {
 
     // the plugin version
-    def version = "0.5.0"
+    def version = "1.0.0"
 
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.1 > *"
@@ -71,7 +71,7 @@ class SpringwsGrailsPlugin {
             'soapui/*'
     ]
 
-    def author = "Russ Miles"
+    def author = "Russ Miles, Dhiraj Mahapatro"
 
     def authorEmail = "russ@russmiles.com"
 
