@@ -19,7 +19,9 @@ grails.project.dependency.resolution = {
         //compile group:'org.springframework.ws', name:'spring-ws', version:'2.1.2.RELEASE', classifier:'all'
 
         compile 'org.springframework.ws:spring-ws-core:2.1.2.RELEASE'
-        compile 'org.springframework.ws:spring-ws-security:2.1.2.RELEASE'
+        compile ('org.springframework.ws:spring-ws-security:2.1.2.RELEASE'){
+            excludes "xws-security", "wsit-rt", "spring-security-core"
+        }
         compile 'org.springframework.security:spring-security-core:2.0.6.RELEASE'
         compile 'org.apache.ws.security:wss4j:1.6.10'
     }
