@@ -16,7 +16,7 @@
 
 package org.codehaus.groovy.grails.plugins.spring.ws
 
-import com.russmiles.groovy.webservices.client.WebServiceTemplate
+import org.codehaus.groovy.grails.plugins.spring.ws.client.WebServiceTemplate
 
 import groovy.xml.MarkupBuilder
 

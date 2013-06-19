@@ -1,29 +1,21 @@
-<plugin name='springws' version='0.5.0' grailsVersion='1.1 &gt; *'>
+<plugin name='springws' version='1.0.0' grailsVersion='1.1 &gt; *'>
   <author>Russ Miles</author>
   <authorEmail>russ@russmiles.com</authorEmail>
-  <title>This plugin adds contract driven web service capabilities to a Grails application.</title>
-  <description>\
-    	Spring Web Services plugin allows your Grails application to provide and consume 
-    	contract-driven web services. Feature highlights include: 
-    	* New in 0.5.0: Added support for Web Services Security (WS-Security)
-		* New in 0.2.3: Bug fix release (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1225)
-		* New in 0.2.2: Added configuration option to override default Endpoint-name-based strategy for mapping incoming XML payloads to endpoints
-		* New in 0.2.1: Fixed concurrency bug in DefaultEndpointAdapter (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
-		* New in 0.2.1: Upgraded to Spring Web Services 1.5.7 (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
-		* Endpoint Interceptors so that you can now introduce
-		  common logic in an unintrusive fashion across a specified range of endpoints
-		* You can export the wsdl for a given endpoint by, in the simplest case,  
-		  setting the springws.wsdl.&lt;your endpoint name, without the Endpoint bit&gt;.export
-		* The EndpointFunctionalTestCase offers a more groovy withEndpointRequest closure 
-		  that significantly tightens up your endpoint functional test code.
-        * On the service provision side, a first-class endpoint	artefact is introduced including 
-          functional tests for endpoints.
-        * When consuming services, a WebServiceTemplate is provided, in much the same vein as 
-          the Spring WebServiceTemplate, that integrates more naturally with the rest of your Groovy code.</description>
+  <title>Spring WS Plugin</title>
+  <description>Spring Web Services plugin allows your Grails application to provide and consume contract-driven web services. Feature highlights include: 
+* New in 0.5.0: Added support for Web Services Security (WS-Security)
+* New in 0.2.3: Bug fix release (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1225)
+* New in 0.2.2: Added configuration option to override default Endpoint-name-based strategy for mapping incoming XML payloads to endpoints
+* New in 0.2.1: Fixed concurrency bug in DefaultEndpointAdapter (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
+* New in 0.2.1: Upgraded to Spring Web Services 1.5.7 (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
+* Endpoint Interceptors so that you can now introduce common logic in an unintrusive fashion across a specified range of endpoints
+* You can export the wsdl for a given endpoint by, in the simplest case, setting the springws.wsdl.&lt;your endpoint name, without the Endpoint bit&gt;.export
+* The EndpointFunctionalTestCase offers a more groovy withEndpointRequest closure that significantly tightens up your endpoint functional test code.
+* On the service provision side, a first-class endpoint artefact is introduced including functional tests for endpoints.
+* When consuming services, a WebServiceTemplate is provided, in much the same vein as the Spring WebServiceTemplate, that integrates more naturally with the rest of your Groovy code.</description>
   <documentation>http://grails.org/SpringWs+Plugin</documentation>
+  <type>SpringwsGrailsPlugin</type>
   <resources>
-    <resource>Config</resource>
-    <resource>UrlMappings</resource>
     <resource>WsSecurityConfig</resource>
     <resource>spring.resources</resource>
     <resource>CancelHolidayEndpoint</resource>
@@ -33,8 +25,12 @@
     <resource>XMLDateCodec</resource>
     <resource>XMLDateTimeCodec</resource>
   </resources>
-  <dependencies>
-    <resolvers />
-  </dependencies>
+  <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+  </repositories>
+  <dependencies />
+  <plugins />
+  <runtimePluginRequirements />
   <behavior />
 </plugin>

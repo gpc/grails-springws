@@ -71,7 +71,7 @@ class SpringwsGrailsPlugin {
             'soapui/*'
     ]
 
-    def author = "Russ Miles, Dhiraj Mahapatro"
+    def author = "Russ Miles"
 
     def authorEmail = "russ@russmiles.com"
 
@@ -94,6 +94,8 @@ Spring Web Services plugin allows your Grails application to provide and consume
     def license = "APACHE"
     def issueManagement = [system: "JIRA", url: "http://jira.grails.org/browse/GPSPRINGWS"]
     def scm = [url: "https://github.com/gpc/grails-springws"]
+
+    def developers = [ [ name: "Dhiraj Mahapatro", email: "dmahapatro@netjets.com" ]]
 
     def artefacts = [EndpointArtefactHandler, InterceptorsConfigArtefactHandler, WsSecurityConfigArtefactHandler]
 
