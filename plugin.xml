@@ -29,7 +29,14 @@
     <repository name='grailsCentral' url='http://grails.org/plugins' />
     <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
   </repositories>
-  <dependencies />
+  <dependencies>
+    <compile>
+      <dependency group='org.springframework.security' name='spring-security-core' version='2.0.6.RELEASE' />
+      <dependency group='org.apache.ws.security' name='wss4j' version='1.6.10' />
+      <dependency group='org.springframework.ws' name='spring-ws-core' version='2.1.2.RELEASE' />
+      <dependency group='org.springframework.ws' name='spring-ws-security' version='2.1.2.RELEASE' />
+    </compile>
+  </dependencies>
   <plugins />
   <runtimePluginRequirements />
   <behavior />

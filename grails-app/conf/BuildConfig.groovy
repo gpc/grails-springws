@@ -26,7 +26,7 @@ grails.project.dependency.resolution = {
         compile 'org.apache.ws.security:wss4j:1.6.10'
     }
     plugins {
-        build ":release:2.2.1", {
+        build ":release:2.2.1", ":rest-client-builder:1.0.3", {
             export = false
         }
     }
