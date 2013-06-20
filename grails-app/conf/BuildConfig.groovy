@@ -24,6 +24,8 @@ grails.project.dependency.resolution = {
         }
         compile 'org.springframework.security:spring-security-core:2.0.6.RELEASE'
         compile 'org.apache.ws.security:wss4j:1.6.10'
+        //compile 'org.apache.ws.commons.schema:XmlSchema:1.4.3'
+        compile 'org.apache.ws.xmlschema:xmlschema-core:2.0.2'
     }
     plugins {
         build ":release:2.2.1", ":rest-client-builder:1.0.3", {

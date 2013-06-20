@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+import grails.util.Holders
 import org.codehaus.groovy.grails.plugins.spring.ws.EndpointArtefactHandler
 import org.codehaus.groovy.grails.plugins.spring.ws.InterceptorsConfigArtefactHandler
 import org.codehaus.groovy.grails.plugins.spring.ws.GrailsEndpointClass
@@ -122,6 +124,7 @@ class SpringwsGrailsPlugin {
                     serviceName = wsdlConfig.serviceName ?: "${name}Service"
                     locationUri = wsdlConfig.locationUri ?: "${application.config.grails.serverURL ?: 'http://localhost:8080/' + application.metadata['app.name']}/services/${name}Request"
                     targetNamespace = wsdlConfig.targetNamespace ?: "${endpointClass.getClazz().namespace}/definitions"
+                    //inline = wsdlConfig.inline ?: false
                 }
             }
         }
@@ -144,7 +147,7 @@ class SpringwsGrailsPlugin {
         }
 
         // if Spring Security is installed, add access decision beans
-        def foundAcegi = manager.hasGrailsPlugin('acegi')
+        def foundAcegi = Holders.getPluginManager()?.hasGrailsPlugin('acegi')
         if (foundAcegi) {
             wsSecurityRoleVoter(SpringwsGrailsPlugin.classLoader.loadClass('org.springframework.security.vote.RoleVoter')) {}
             wsSecurityAccessDecisionManager(SpringwsGrailsPlugin.classLoader.loadClass('org.springframework.security.vote.AffirmativeBased')) {
@@ -213,7 +216,7 @@ class SpringwsGrailsPlugin {
             }
         }
 
-        def foundAcegi = manager.hasGrailsPlugin('acegi')
+        def foundAcegi = Holders.getPluginManager()?.hasGrailsPlugin('acegi')
         def acegiActive
         def acegiConfig
         def foundSecurityBeans = foundAcegi && applicationContext.authenticationManager && applicationContext.userDetailsService && applicationContext.userCache
