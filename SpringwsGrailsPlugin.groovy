@@ -48,20 +48,9 @@ import org.springframework.ws.soap.server.endpoint.SimpleSoapExceptionResolver
  * @author Tareq Abedrabbo (tareq.abedrabbo@gmail.com)
  */
 class SpringwsGrailsPlugin {
-
-    // the plugin version
     def version = "1.0.0"
-
-    // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.1 > *"
-
-    // the other plugins this plugin depends on
-    // This dependency would be useful, but should be scoped to
-    // test only to avoid packaging problems... however there is currently
-    // no scoping for inter-plugin dependencies
     //def dependsOn = [functionalTest:'1.2.5 > *']
-
-    // resources that are excluded from plugin packaging
     def pluginExcludes = [
             'grails-app/endpoints/*',
             'grails-app/conf/WsSecurityConfig.groovy',
@@ -70,38 +59,18 @@ class SpringwsGrailsPlugin {
             'test/integration/*',
             'soapui/*'
     ]
-
     def author = "Russ Miles"
-
     def authorEmail = "russ@russmiles.com"
-
     def title = "Spring WS Plugin"
-
-    def description = '''\
-Spring Web Services plugin allows your Grails application to provide and consume contract-driven web services. Feature highlights include: 
-* New in 0.5.0: Added support for Web Services Security (WS-Security)
-* New in 0.2.3: Bug fix release (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1225)
-* New in 0.2.2: Added configuration option to override default Endpoint-name-based strategy for mapping incoming XML payloads to endpoints
-* New in 0.2.1: Fixed concurrency bug in DefaultEndpointAdapter (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
-* New in 0.2.1: Upgraded to Spring Web Services 1.5.7 (see http://jira.codehaus.org/browse/GRAILSPLUGINS-1208)
-* Endpoint Interceptors so that you can now introduce common logic in an unintrusive fashion across a specified range of endpoints
-* You can export the wsdl for a given endpoint by, in the simplest case, setting the springws.wsdl.<your endpoint name, without the Endpoint bit>.export
-* The EndpointFunctionalTestCase offers a more groovy withEndpointRequest closure that significantly tightens up your endpoint functional test code.
-* On the service provision side, a first-class endpoint artefact is introduced including functional tests for endpoints.
-* When consuming services, a WebServiceTemplate is provided, in much the same vein as the Spring WebServiceTemplate, that integrates more naturally with the rest of your Groovy code.'''
-
+    def description = 'Spring WS Plugin'
     def documentation = "http://grails.org/SpringWs+Plugin"
     def license = "APACHE"
     def issueManagement = [system: "JIRA", url: "http://jira.grails.org/browse/GPSPRINGWS"]
     def scm = [url: "https://github.com/gpc/grails-springws"]
-
     def developers = [ [ name: "Dhiraj Mahapatro", email: "dmahapatro@netjets.com" ]]
-
     def artefacts = [EndpointArtefactHandler, InterceptorsConfigArtefactHandler, WsSecurityConfigArtefactHandler]
-
     def watchedResources = ["file:./grails-app/endpoints/**/*",
                             "file:./grails-app/conf/*WsSecurityConfig.groovy"]
-
     def loadAfter = ['acegi']
     
     def log = LogFactory.getLog(SpringwsGrailsPlugin)
@@ -175,7 +144,7 @@ Spring Web Services plugin allows your Grails application to provide and consume
         }
 
         // if Spring Security is installed, add access decision beans
-        def foundAcegi = PluginManagerHolder.getPluginManager().hasGrailsPlugin('acegi')
+        def foundAcegi = manager.hasGrailsPlugin('acegi')
         if (foundAcegi) {
             wsSecurityRoleVoter(SpringwsGrailsPlugin.classLoader.loadClass('org.springframework.security.vote.RoleVoter')) {}
             wsSecurityAccessDecisionManager(SpringwsGrailsPlugin.classLoader.loadClass('org.springframework.security.vote.AffirmativeBased')) {
@@ -193,15 +162,6 @@ Spring Web Services plugin allows your Grails application to provide and consume
 
         // Payload mapper
         "payloadRootQNameEndpointMapping"(ReloadablePayloadRootQNameEndpointMapping)
-
-        // exception resolvers
-        // domainSoapFaultExceptionResolver(DomainSoapFaultExceptionResolver){
-        //         order = 100
-        // }
-        //
-        // simpleSoapExceptionResolver(SimpleSoapExceptionResolver){
-        //         order = 200
-        // }
     }
 
     def doWithApplicationContext = { applicationContext ->
@@ -253,7 +213,7 @@ Spring Web Services plugin allows your Grails application to provide and consume
             }
         }
 
-        def foundAcegi = PluginManagerHolder.getPluginManager().hasGrailsPlugin('acegi')
+        def foundAcegi = manager.hasGrailsPlugin('acegi')
         def acegiActive
         def acegiConfig
         def foundSecurityBeans = foundAcegi && applicationContext.authenticationManager && applicationContext.userDetailsService && applicationContext.userCache
@@ -306,7 +266,7 @@ Spring Web Services plugin allows your Grails application to provide and consume
                     def serviceFilters = []
                     def newChainMap = ['/services/**':serviceFilters] as LinkedHashMap
 
-                        newChainMap.putAll(filterChain.filterChainMap)
+                    newChainMap.putAll(filterChain.filterChainMap)
                     filterChain.filterChainMap = newChainMap
                     log.debug "Excluded /services/** from the security filter chain. Resulting mapping: ${filterChain.filterChainMap}"
                  }
