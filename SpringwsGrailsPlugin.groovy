@@ -119,12 +119,12 @@ class SpringwsGrailsPlugin {
                 "${wsdlConfig.wsdlName ?: name}"(DefaultWsdl11Definition){
                     schemaCollection = {CommonsXsdSchemaCollection s->
                         xsds= (wsdlConfig.xsds)? wsdlConfig.xsds.split(',') : "/WEB-INF/${name}.xsd"
+                        inline = wsdlConfig.inline ?: false
                     }
                     portTypeName = wsdlConfig.portTypeName ?: "${name}Port"
                     serviceName = wsdlConfig.serviceName ?: "${name}Service"
                     locationUri = wsdlConfig.locationUri ?: "${application.config.grails.serverURL ?: 'http://localhost:8080/' + application.metadata['app.name']}/services/${name}Request"
                     targetNamespace = wsdlConfig.targetNamespace ?: "${endpointClass.getClazz().namespace}/definitions"
-                    //inline = wsdlConfig.inline ?: false
                 }
             }
         }
