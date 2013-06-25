@@ -21,10 +21,11 @@
   </repositories>
   <dependencies>
     <compile>
-      <dependency group='org.springframework.security' name='spring-security-core' version='2.0.6.RELEASE' />
-      <dependency group='org.apache.ws.security' name='wss4j' version='1.6.10' />
-      <dependency group='org.springframework.ws' name='spring-ws-core' version='2.1.2.RELEASE' />
       <dependency group='org.springframework.ws' name='spring-ws-security' version='2.1.2.RELEASE' />
+      <dependency group='org.springframework.security' name='spring-security-core' version='2.0.6.RELEASE' />
+      <dependency group='org.springframework.ws' name='spring-ws-core' version='2.1.2.RELEASE' />
+      <dependency group='org.apache.ws.xmlschema' name='xmlschema-core' version='2.0.2' />
+      <dependency group='org.apache.ws.security' name='wss4j' version='1.6.10' />
     </compile>
   </dependencies>
   <plugins />
