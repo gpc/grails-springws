@@ -15,31 +15,19 @@
  */
 
 
-import grails.util.Holders
-import org.codehaus.groovy.grails.plugins.spring.ws.EndpointArtefactHandler
-import org.codehaus.groovy.grails.plugins.spring.ws.InterceptorsConfigArtefactHandler
-import org.codehaus.groovy.grails.plugins.spring.ws.GrailsEndpointClass
-import org.codehaus.groovy.grails.plugins.spring.ws.EndpointInterceptorAdapter
-import org.codehaus.groovy.grails.plugins.spring.ws.DefaultEndpointAdapter
-import org.codehaus.groovy.grails.plugins.spring.ws.ReloadablePayloadRootQNameEndpointMapping
-
-
-import org.codehaus.groovy.grails.plugins.PluginManagerHolder
-
-import org.springframework.beans.factory.config.MethodInvokingFactoryBean
-import org.codehaus.groovy.grails.commons.GrailsClassUtils
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition
-import org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection
-import org.apache.commons.logging.LogFactory
-
-import org.codehaus.groovy.grails.plugins.spring.ws.InterceptorConfig
-import org.codehaus.groovy.grails.plugins.spring.ws.security.*
 
 import grails.util.GrailsNameUtils
-import org.codehaus.groovy.grails.plugins.spring.ws.fault.DomainSoapFaultExceptionResolver
-import org.springframework.ws.soap.server.endpoint.SimpleSoapExceptionResolver
-
+import grails.util.Holders
+import org.apache.commons.logging.LogFactory
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import org.codehaus.groovy.grails.plugins.spring.ws.*
+import org.codehaus.groovy.grails.plugins.spring.ws.security.WebServiceInvocationDefinitionSource
+import org.codehaus.groovy.grails.plugins.spring.ws.security.WsSecurityConfigArtefactHandler
+import org.codehaus.groovy.grails.plugins.spring.ws.security.WsSecurityConfigFactory
+import org.springframework.beans.factory.config.MethodInvokingFactoryBean
+import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition
+import org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection
 
 /**
  * Plugin that introduces some conventions for creating Spring WS based, best practice
@@ -69,16 +57,16 @@ class SpringwsGrailsPlugin {
     def license = "APACHE"
     def issueManagement = [system: "JIRA", url: "http://jira.grails.org/browse/GPSPRINGWS"]
     def scm = [url: "https://github.com/gpc/grails-springws"]
-    def developers = [ [ name: "Dhiraj Mahapatro", email: "dmahapatro@netjets.com" ]]
+    def developers = [[name: "Dhiraj Mahapatro", email: "dmahapatro@netjets.com"]]
     def artefacts = [EndpointArtefactHandler, InterceptorsConfigArtefactHandler, WsSecurityConfigArtefactHandler]
     def watchedResources = ["file:./grails-app/endpoints/**/*",
-                            "file:./grails-app/conf/*WsSecurityConfig.groovy"]
+            "file:./grails-app/conf/*WsSecurityConfig.groovy"]
     def loadAfter = ['acegi']
-    
+
     def log = LogFactory.getLog(SpringwsGrailsPlugin)
-    
+
     static final DEFAULT_WS_SECURITY_CONFIG_NAME = 'WsSecurityConfig'
-    
+
     static final ENDPOINT_BEANS = { endpoint ->
         "${endpoint.fullName}"(endpoint.clazz) { bean ->
             bean.singleton = true
@@ -107,18 +95,18 @@ class SpringwsGrailsPlugin {
 
     def doWithSpring = {
         // Add each of the endpoints
-        for(endpointClass in application.getArtefacts(EndpointArtefactHandler.TYPE)) {
-            def name= endpointClass.name
+        for (endpointClass in application.getArtefacts(EndpointArtefactHandler.TYPE)) {
+            def name = endpointClass.name
             def callable = ENDPOINT_BEANS.curry(endpointClass)
             callable.delegate = delegate
             callable.call()
 
-            def wsdlConfig= application.config.springws?.wsdl?."$name"
-            if(wsdlConfig){
+            def wsdlConfig = application.config.springws?.wsdl?."$name"
+            if (wsdlConfig) {
                 log.debug("exporting wsdl for $name")
-                "${wsdlConfig.wsdlName ?: name}"(DefaultWsdl11Definition){
-                    schemaCollection = {CommonsXsdSchemaCollection s->
-                        xsds= (wsdlConfig.xsds)? wsdlConfig.xsds.split(',') : "/WEB-INF/${name}.xsd"
+                "${wsdlConfig.wsdlName ?: name}"(DefaultWsdl11Definition) {
+                    schemaCollection = { CommonsXsdSchemaCollection s ->
+                        xsds = (wsdlConfig.xsds) ? wsdlConfig.xsds.split(',') : "/WEB-INF/${name}.xsd"
                         inline = wsdlConfig.inline ?: false
                     }
                     portTypeName = wsdlConfig.portTypeName ?: "${name}Port"
@@ -130,7 +118,7 @@ class SpringwsGrailsPlugin {
         }
 
         // Add ws-security for each of the applicable classes
-        for(wsSecurityConfigClass in application.wsSecurityConfigClasses){
+        for (wsSecurityConfigClass in application.wsSecurityConfigClasses) {
             log.debug "found WS-Security configuration class: ${wsSecurityConfigClass.fullName}"
             def callable = SECURITY_CONFIG_BEANS.curry(wsSecurityConfigClass)
             callable.delegate = delegate
@@ -140,7 +128,7 @@ class SpringwsGrailsPlugin {
         // Configure the applicable key stores
         def keyStores = application.config.springws?.security?.keyStore
         log.debug "key stores: ${keyStores.entrySet().inspect()}"
-        for(keyStore in keyStores) {
+        for (keyStore in keyStores) {
             def bean = WsSecurityConfigFactory.createKeyStoreBean(keyStore)
             bean.delegate = delegate
             bean.call()
@@ -155,13 +143,13 @@ class SpringwsGrailsPlugin {
             }
             wsSecurityObjectDefinitionSource(WebServiceInvocationDefinitionSource) {}
         }
-        
+
         // Add each of the interceptors
-        for(interceptorsClass in application.getArtefacts(InterceptorsConfigArtefactHandler.TYPE)) {
+        for (interceptorsClass in application.getArtefacts(InterceptorsConfigArtefactHandler.TYPE)) {
             def callable = INTERCEPTOR_BEANS.curry(interceptorsClass)
             callable.delegate = delegate
             callable.call()
-         }
+        }
 
         // Payload mapper
         "payloadRootQNameEndpointMapping"(ReloadablePayloadRootQNameEndpointMapping)
@@ -173,11 +161,11 @@ class SpringwsGrailsPlugin {
 
     def onChange = { event ->
         if (log.debugEnabled) log.debug("onChange: ${event}")
-    
-        if(event.source.toString().endsWith('Endpoint')) {
+
+        if (event.source.toString().endsWith('Endpoint')) {
             def newEndpoint = event.application.addArtefact(EndpointArtefactHandler.TYPE, event.source)
             beans(ENDPOINT_BEANS.curry(newEndpoint)).registerBeans(event.ctx)
-        } else if(event.source.toString().endsWith('Interceptors')) {
+        } else if (event.source.toString().endsWith('Interceptors')) {
             def newInterceptor = event.application.addArtefact(InterceptorsConfigArtefactHandler.TYPE, event.source)
             beans(INTERCEPTOR_BEANS.curry(newInterceptor)).registerBeans(event.ctx)
         } else if (event.source.toString().endsWith('WsSecurityConfig')) {
@@ -187,18 +175,18 @@ class SpringwsGrailsPlugin {
 
         reload(event.application, event.ctx)
     }
-    
+
     private reload(GrailsApplication application, applicationContext) {
         log.info("reloadEndpoints")
         def defaultMappings = [:]
-        for(endpointClass in application.getArtefacts(EndpointArtefactHandler.TYPE)) {
+        for (endpointClass in application.getArtefacts(EndpointArtefactHandler.TYPE)) {
             def endpoint = applicationContext.getBean("${endpointClass.fullName}")
-            def adapter= new DefaultEndpointAdapter(endpointImpl: endpoint, name: endpointClass.logicalPropertyName)
+            def adapter = new DefaultEndpointAdapter(endpointImpl: endpoint, name: endpointClass.logicalPropertyName)
             def requestElement
-            if(GrailsClassUtils.isStaticProperty(endpointClass.getClazz(), 'requestElement')){
-                requestElement= endpointClass.getClazz().requestElement
-            }else{
-                requestElement= "${endpointClass.name}Request"
+            if (GrailsClassUtils.isStaticProperty(endpointClass.getClazz(), 'requestElement')) {
+                requestElement = endpointClass.getClazz().requestElement
+            } else {
+                requestElement = "${endpointClass.name}Request"
             }
             defaultMappings["{${endpointClass.getClazz().namespace}}${requestElement}"] = adapter
         }
@@ -208,11 +196,11 @@ class SpringwsGrailsPlugin {
 
         log.info("reloadInterceptors")
         def interceptors = []
-        for(ic in application.getArtefacts(InterceptorsConfigArtefactHandler.TYPE)) {
+        for (ic in application.getArtefacts(InterceptorsConfigArtefactHandler.TYPE)) {
             def interceptorClass = applicationContext.getBean("${ic.fullName}Class")
             def bean = applicationContext.getBean(ic.fullName)
-            for(interceptorConfig in interceptorClass.getConfigs(bean)) {
-                interceptors << new EndpointInterceptorAdapter(interceptorConfig:interceptorConfig, configClass:bean)
+            for (interceptorConfig in interceptorClass.getConfigs(bean)) {
+                interceptors << new EndpointInterceptorAdapter(interceptorConfig: interceptorConfig, configClass: bean)
             }
         }
 
@@ -232,7 +220,7 @@ class SpringwsGrailsPlugin {
             if (acegiActive) {
                 log.debug 'Spring Security plugin is active.'
 
-                if(foundSecurityBeans) {
+                if (foundSecurityBeans) {
                     authenticationManager = applicationContext.authenticationManager
                     userDetailsService = applicationContext.userDetailsService
                     accessDecisionManager = applicationContext.wsSecurityAccessDecisionManager
@@ -246,7 +234,7 @@ class SpringwsGrailsPlugin {
 
                     //TODO add checks on the type of configured authorization
                     objectDefinitionSource.urlMatcher = applicationContext.filterInvocationInterceptor.objectDefinitionSource.urlMatcher
-        
+
                     // copy urls that start with /services/ to our objectDefinitionSource
                     if (!acegiConfig.useRequestMapDomainClass && acegiConfig.requestMapString) {
                         log.debug 'Using requestMapString for authorization.'
@@ -267,18 +255,16 @@ class SpringwsGrailsPlugin {
                     // exclude /services/** from the FilterChainProxy by providing a more specific url
                     def filterChain = applicationContext.springSecurityFilterChain
                     def serviceFilters = []
-                    def newChainMap = ['/services/**':serviceFilters] as LinkedHashMap
+                    def newChainMap = ['/services/**': serviceFilters] as LinkedHashMap
 
                     newChainMap.putAll(filterChain.filterChainMap)
                     filterChain.filterChainMap = newChainMap
                     log.debug "Excluded /services/** from the security filter chain. Resulting mapping: ${filterChain.filterChainMap}"
-                 }
-                 else {
+                } else {
                     //TODO better message: suggest running the create-auth-domains script
                     log.warn 'Security beans not found. Make sure the acegi plugin is active and the authentication domain is generated.'
                 }
-            }
-            else {
+            } else {
                 log.debug "Spring Security plugin is not active."
             }
         } else {
@@ -288,8 +274,8 @@ class SpringwsGrailsPlugin {
         log.debug("Reloading security config")
         def foundDefaultWsSecurityConfig = applicationContext."$DEFAULT_WS_SECURITY_CONFIG_NAME" && application.isArtefactOfType(DEFAULT_WS_SECURITY_CONFIG_NAME, 'WsSecurityConfig')
         log.debug "Found default WS-Security config: $foundDefaultWsSecurityConfig"
-        for(wsSecurityConfigClass in application.wsSecurityConfigClasses) {
-            log.debug "Processing ${wsSecurityConfigClass.dump()}" 
+        for (wsSecurityConfigClass in application.wsSecurityConfigClasses) {
+            log.debug "Processing ${wsSecurityConfigClass.dump()}"
             def config = applicationContext."${wsSecurityConfigClass.fullName}"
             log.debug "Creating WS-Security interceptor for ${config.class.name}. Default: ${config.class.name == DEFAULT_WS_SECURITY_CONFIG_NAME}"
             def params = [securityConfigClass: config]
@@ -301,14 +287,14 @@ class SpringwsGrailsPlugin {
                 params['accessDecisionManager'] = accessDecisionManager
                 params['objectDefinitionSource'] = objectDefinitionSource
             }
-          
+
             def securityInterceptor = WsSecurityConfigFactory.createInterceptor(params)
             log.debug "Created WS-Security interceptor: ${securityInterceptor.dump()}"
             // detect referent endpoints
             def referents = []
             for (endpointClass in application.endpointClasses) {
                 if (GrailsClassUtils.isStaticProperty(endpointClass.clazz, 'wsSecurity')) {
-                       def endpointName = GrailsNameUtils.getPropertyName(endpointClass.name)
+                    def endpointName = GrailsNameUtils.getPropertyName(endpointClass.name)
                     def wsSecurity = endpointClass.clazz.wsSecurity
                     // check for default config class i.e. static wsSecurity = true
                     if ((wsSecurity instanceof Boolean)) {
@@ -318,15 +304,13 @@ class SpringwsGrailsPlugin {
                             }
                             // if this is the default config, use it
                             if (config.class.name == DEFAULT_WS_SECURITY_CONFIG_NAME) {
-                                referents << endpointName                                
+                                referents << endpointName
                             }
                         }
-                    }
-                    else {
+                    } else {
                         if (wsSecurity == config.class) {
                             referents << endpointName
-                        }
-                        else {
+                        } else {
                             throw new IllegalArgumentException("${endpointName}.wsSecurity must either be of boolean type or point to WS-Security config class")
                         }
                     }
@@ -334,12 +318,12 @@ class SpringwsGrailsPlugin {
             }
             log.debug "Endpoints using ${config.class.name}: ${referents.inspect()}"
             def regexp = referents.join('|')
-            if(referents){
-                def interceptorConfig = new InterceptorConfig(name:wsSecurityConfigClass.fullName, interceptorList:[securityInterceptor],scope:regexp ,initialised:true)
-                def interceptorAdapter = new EndpointInterceptorAdapter(interceptorConfig:interceptorConfig)
+            if (referents) {
+                def interceptorConfig = new InterceptorConfig(name: wsSecurityConfigClass.fullName, interceptorList: [securityInterceptor], scope: regexp, initialised: true)
+                def interceptorAdapter = new EndpointInterceptorAdapter(interceptorConfig: interceptorConfig)
                 // inject it in the interceptors chain
-                def order = GrailsClassUtils.isStaticProperty(config.class,'order') ? config.order : 0
-                if(order > interceptors.size()){
+                def order = GrailsClassUtils.isStaticProperty(config.class, 'order') ? config.order : 0
+                if (order > interceptors.size()) {
                     order = interceptors.size() // -1?
                 }
                 interceptors.add(order, interceptorAdapter)
@@ -349,7 +333,7 @@ class SpringwsGrailsPlugin {
         if (log.debugEnabled) log.debug("resulting interceptors: ${interceptors}")
         applicationContext.getBean('payloadRootQNameEndpointMapping').interceptors = interceptors
     }
-    
+
     def doWithWebDescriptor = { xml ->
         // servlets
         def servlets = xml.servlet
