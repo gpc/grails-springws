@@ -39,7 +39,7 @@ import org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection
  */
 class SpringwsGrailsPlugin {
     def version = "1.0.0"
-    def grailsVersion = "1.1 > *"
+    def grailsVersion = "2.0 > *"
     //def dependsOn = [functionalTest:'1.2.5 > *']
     def pluginExcludes = [
             'grails-app/endpoints/*',
