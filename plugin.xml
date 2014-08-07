@@ -1,4 +1,4 @@
-<plugin name='springws' version='1.0.0' grailsVersion='1.1 &gt; *'>
+<plugin name='springws' version='2.0.0' grailsVersion='2.0 &gt; *'>
   <author>Russ Miles</author>
   <authorEmail>russ@russmiles.com</authorEmail>
   <title>Spring WS Plugin</title>
@@ -6,29 +6,8 @@
   <documentation>http://grails.org/SpringWs+Plugin</documentation>
   <type>SpringwsGrailsPlugin</type>
   <resources>
-    <resource>WsSecurityConfig</resource>
     <resource>spring.resources</resource>
-    <resource>CancelHolidayEndpoint</resource>
-    <resource>CustomRequestElementEndpoint</resource>
-    <resource>EndpointInterceptors</resource>
-    <resource>HolidayEndpoint</resource>
     <resource>XMLDateCodec</resource>
     <resource>XMLDateTimeCodec</resource>
   </resources>
-  <repositories>
-    <repository name='grailsCentral' url='http://grails.org/plugins' />
-    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
-  </repositories>
-  <dependencies>
-    <compile>
-      <dependency group='org.apache.ws.xmlschema' name='xmlschema-core' version='2.0.2' />
-      <dependency group='org.apache.ws.security' name='wss4j' version='1.6.10' />
-      <dependency group='org.springframework.security' name='spring-security-core' version='2.0.6.RELEASE' />
-      <dependency group='org.springframework.ws' name='spring-ws-security' version='2.1.2.RELEASE' />
-      <dependency group='org.springframework.ws' name='spring-ws-core' version='2.1.2.RELEASE' />
-    </compile>
-  </dependencies>
-  <plugins />
-  <runtimePluginRequirements />
-  <behavior />
 </plugin>
