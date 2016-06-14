@@ -50,5 +50,8 @@ class SoapHeadersInterceptor extends TransformerObjectSupport implements Endpoin
 
     }
 
+    void afterCompletion(MessageContext messageContext, Object endPointClass, Exception e){
+        //TODO: Implement afterCompletion here
+    }
 }
 

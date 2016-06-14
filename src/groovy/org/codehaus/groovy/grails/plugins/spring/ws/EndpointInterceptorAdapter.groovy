@@ -123,6 +123,10 @@ public class EndpointInterceptorAdapter implements SoapEndpointInterceptor {
         return endpoineRegex.matcher(endpointName).matches()
     }
 
+    void afterCompletion(MessageContext messageContext, Object endPointClass, Exception e){
+        //TODO: Implement afterCompletion here
+    }
+
     String toString() {
         return "EndpointInterceptorAdapter[$interceptorConfig, $configClass]"
     }

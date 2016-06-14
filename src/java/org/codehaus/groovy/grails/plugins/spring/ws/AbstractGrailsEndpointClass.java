@@ -40,7 +40,7 @@ public abstract class AbstractGrailsEndpointClass extends AbstractInjectableGrai
 
 	public Source invoke(Source request) throws Exception {
         Writer responseWriter = createResponseWriter();
-        getMetaClass().invokeMethod( getReference().getWrappedInstance(), INVOKE, new Object[] {
+        getMetaClass().invokeMethod( getReferenceInstance(), INVOKE, new Object[] {
                 createRequest(request),
                 createResponse(responseWriter)
         } );
